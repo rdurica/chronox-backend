@@ -1,0 +1,23 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+*.idea
+*.vscode
+build/dev/certs
+
+#PHP
+src/temp
+src/log
+src/config/jwt
+src/.env.local
+upload
+
+# K8s
+manifest.yaml
