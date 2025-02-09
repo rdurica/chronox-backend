@@ -6,11 +6,3 @@ controllers:
 auth:
     path: /auth
     methods: ['POST']
-
-root:
-    path: /
-    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
-    defaults:
-        path: /api
-        permanent: true
-        ignoreAttributes: true
