@@ -19,14 +19,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\UniqueConstraint(name: 'user_entry_date_uq', columns: ['user_id', 'entry_date'])]
 #[ApiResource(
     operations: [
-        new Post(exceptionToStatus: [DayAlreadyExistException::class => 422]),
+        new Post(exceptionToStatus: [DayAlreadyExistException::class => 422], processor: DayProcessor::class),
         new Get(),
         new GetCollection(),
         new Delete()
     ],
     normalizationContext: ['groups' => ['day:read']],
     denormalizationContext: ['groups' => ['day:write']],
-    processor: DayProcessor::class
 )]
 class Day
 {
