@@ -9,6 +9,7 @@ api_platform:
         html: [ 'text/html' ]
     defaults:
         stateless: true
+        pagination_items_per_page: 20
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
     swagger:
@@ -16,3 +17,6 @@ api_platform:
             JWT:
                 name: Authorization
                 type: header
+    collection:
+        pagination:
+            page_parameter_name: page
