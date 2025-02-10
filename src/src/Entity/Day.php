@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Post;
 use App\Exception\DayAlreadyExistException;
 use App\Repository\DayRepository;
 use App\Processor\DayProcessor;
+use App\State\DayStateProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,12 +21,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new Post(exceptionToStatus: [DayAlreadyExistException::class => 422], processor: DayProcessor::class),
-        new Get(),
-        new GetCollection(),
+        new GetCollection(provider: DayStateProvider::class),
+        new Get(security: "is_granted('VIEW', object)"),
         new Delete(security: "is_granted('DELETE', object)"),
     ],
     normalizationContext: ['groups' => ['day:read']],
     denormalizationContext: ['groups' => ['day:write']],
+    order: ['entryDate' => 'DESC'],
 )]
 class Day
 {
