@@ -10,6 +10,16 @@ use App\Entity\User;
 use App\Repository\DayRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 
+/**
+ * Provides a custom data provider for the `Day` entity.
+ *
+ * This state provider is used in API Platform to retrieve paginated and
+ * user-specific `Day` entries. It ensures that users can only fetch their
+ * own records while preserving pagination and sorting.
+ *
+ * @copyright Copyright (c) 2025, Robert Durica
+ * @since     2025-02-10
+ */
 class DayStateProvider implements ProviderInterface
 {
     public function __construct(private DayRepository $dayRepository, private Security $security)

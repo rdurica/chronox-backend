@@ -8,6 +8,7 @@ use App\Entity\Day;
 use App\Exception\DayAlreadyExistException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -37,10 +38,10 @@ final class DayProcessor implements ProcessorInterface
             $this->entityManager->persist($data);
             $this->entityManager->flush();
         }
-        catch (UniqueConstraintViolationException $e) {
+        catch (UniqueConstraintViolationException) {
             throw new DayAlreadyExistException();
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             throw new BadRequestHttpException('An unexpected error occurred.', $e);
         }
 

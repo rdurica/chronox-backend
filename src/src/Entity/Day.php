@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
@@ -8,20 +10,37 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Exception\DayAlreadyExistException;
-use App\Repository\DayRepository;
 use App\Processor\DayProcessor;
+use App\Repository\DayRepository;
 use App\State\DayStateProvider;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 
+/**
+ * Represents a user's daily entry in the system.
+ *
+ * This entity is used to store and manage daily records for users. Each entry is
+ * uniquely identified by the combination of `user_id` and `entry_date` to prevent
+ * duplicate entries for the same day.
+ *
+ * @copyright Copyright (c) 2025, Robert Durica
+ * @since     2025-02-10
+ */
 #[ORM\Entity(repositoryClass: DayRepository::class)]
 #[ORM\UniqueConstraint(name: 'user_entry_date_uq', columns: ['user_id', 'entry_date'])]
 #[ApiResource(
     operations: [
-        new Post(exceptionToStatus: [DayAlreadyExistException::class => 422], processor: DayProcessor::class),
-        new GetCollection(provider: DayStateProvider::class),
+        new Post(
+            exceptionToStatus: [DayAlreadyExistException::class => 422],
+            processor: DayProcessor::class
+        ),
+        new GetCollection(
+            provider: DayStateProvider::class
+        ),
         new Get(security: "is_granted('VIEW', object)"),
         new Delete(security: "is_granted('DELETE', object)"),
     ],
@@ -38,18 +57,18 @@ class Day
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['day:read', 'day:write'])]
-    private \DateTimeInterface $entryDate;
+    private DateTimeInterface $entryDate;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     #[Groups(['day:read'])]
-    private \DateTime $createdAt;
+    private DateTime $createdAt;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'entryDays')]
     private UserInterface $user;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
     public function getId(): ?int
@@ -57,12 +76,12 @@ class Day
         return $this->id;
     }
 
-    public function getEntryDate(): \DateTimeInterface
+    public function getEntryDate(): DateTimeInterface
     {
         return $this->entryDate;
     }
 
-    public function setEntryDate(\DateTimeInterface $entryDate): static
+    public function setEntryDate(DateTimeInterface $entryDate): static
     {
         $this->entryDate = $entryDate;
 
@@ -79,12 +98,12 @@ class Day
         return $this->user;
     }
 
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): static
+    public function setCreatedAt(DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
 
