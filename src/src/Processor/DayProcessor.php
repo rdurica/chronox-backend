@@ -13,7 +13,10 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * DayDataPersister.
+ * Custom processor for managing the creation of {@see Day} entries.
+ *
+ * This processor is used to handle the logic behind persisting a new `Day` entry,
+ * ensuring that each entry is associated with the currently authenticated user.
  *
  * @copyright Copyright (c) 2025, Robert Durica
  * @since     2025-02-09

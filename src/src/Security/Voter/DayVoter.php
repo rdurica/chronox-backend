@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Defines access control rules for the `Day` entity.
+ * Defines access control rules for the {@see Day} entity.
  *
  * This voter is responsible for determining whether a user has permission
  * to view, or delete a `Day` entry. It ensures that users can only

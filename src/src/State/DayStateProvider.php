@@ -6,13 +6,13 @@ namespace App\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+use App\Entity\Day;
 use App\Entity\User;
 use App\Repository\DayRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
- * Provides a custom data provider for the `Day` entity.
- *
+ * Provides a custom data provider for the {@see Day} entity.
  * This state provider is used in API Platform to retrieve paginated and
  * user-specific `Day` entries. It ensures that users can only fetch their
  * own records while preserving pagination and sorting.
