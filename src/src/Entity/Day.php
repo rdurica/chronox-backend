@@ -22,7 +22,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Post(exceptionToStatus: [DayAlreadyExistException::class => 422], processor: DayProcessor::class),
         new Get(),
         new GetCollection(),
-        new Delete()
+        new Delete(security: "is_granted('DELETE', object)"),
     ],
     normalizationContext: ['groups' => ['day:read']],
     denormalizationContext: ['groups' => ['day:write']],
@@ -72,7 +72,7 @@ class Day
         $this->user = $user;
     }
 
-    public function getUser(): User
+    public function getUser(): UserInterface
     {
         return $this->user;
     }
