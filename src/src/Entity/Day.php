@@ -15,6 +15,8 @@ use App\Repository\DayRepository;
 use App\State\DayStateProvider;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -67,9 +69,14 @@ class Day
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'entryDays')]
     private UserInterface $user;
 
+    #[ORM\ManyToMany(targetEntity: Task::class, mappedBy: 'days')]
+    #[Groups(['day:read', 'task:read'])]
+    private Collection $tasks;
+
     public function __construct()
     {
         $this->createdAt = new DateTime();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -109,5 +116,10 @@ class Day
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
     }
 }

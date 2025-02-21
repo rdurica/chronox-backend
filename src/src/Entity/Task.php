@@ -13,6 +13,8 @@ use App\Processor\TaskProcessor;
 use App\Repository\TaskRepository;
 use App\State\TaskStateProvider;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -45,24 +47,29 @@ class Task
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['task:read'])]
+    #[Groups(['task:read', 'day:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['task:read', 'task:write'])]
+    #[Groups(['task:read', 'task:write', 'day:read'])]
     private ?string $name = null;
 
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['task:read'])]
+    #[Groups(['task:read', 'day:read'])]
     private bool $finished = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['task:read'])]
+    #[Groups(['task:read', 'day:read'])]
     private DateTime $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['default' => null])]
-    #[Groups(['task:read'])]
+    #[Groups(['task:read', 'day:read'])]
     private DateTime $finishedAt;
+
+    #[ORM\ManyToMany(targetEntity: Day::class, inversedBy: 'tasks')]
+    #[ORM\JoinTable(name: 'day_tasks')]
+    #[Groups(['task:read'])]
+    private Collection $days;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
     #[ORM\JoinColumn(nullable: false)]
@@ -71,6 +78,7 @@ class Task
     public function __construct()
     {
         $this->createdAt = new DateTime();
+        $this->days = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -136,5 +144,10 @@ class Task
     public function getFinishedAt(): DateTime
     {
         return $this->finishedAt;
+    }
+
+    public function getDays(): ArrayCollection
+    {
+        return $this->days;
     }
 }
