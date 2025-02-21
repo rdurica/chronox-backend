@@ -24,7 +24,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Represents a user's daily entry in the system.
- *
  * This entity is used to store and manage daily records for users. Each entry is
  * uniquely identified by the combination of `user_id` and `entry_date` to prevent
  * duplicate entries for the same day.
@@ -41,6 +40,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             processor: DayProcessor::class
         ),
         new GetCollection(
+            normalizationContext: ['groups' => ['day:list']],
             provider: DayStateProvider::class
         ),
         new Get(security: "is_granted('VIEW', object)"),
@@ -55,15 +55,15 @@ class Day
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['day:read'])]
+    #[Groups(['day:read', 'day:list'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['day:read', 'day:write'])]
+    #[Groups(['day:read', 'day:list', 'day:write'])]
     private DateTimeInterface $entryDate;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['day:read'])]
+    #[Groups(['day:read', 'day:list'])]
     private DateTime $createdAt;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'entryDays')]

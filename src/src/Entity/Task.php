@@ -27,7 +27,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
             processor: TaskProcessor::class
         ),
         new GetCollection(
-            provider: TaskStateProvider::class
+            normalizationContext: ['groups' => ['task:list']],
+            provider: TaskStateProvider::class,
         ),
         new Get(security: "is_granted('VIEW', object)"),
         new Delete(security: "is_granted('DELETE', object)"),
@@ -71,6 +72,11 @@ class Task
     #[Groups(['task:read'])]
     private Collection $days;
 
+    #[ORM\OneToMany(targetEntity: SubTask::class, mappedBy: 'task')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['day:read', 'task:read'])]
+    private Collection $subTasks;
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
     #[ORM\JoinColumn(nullable: false)]
     private UserInterface $user;
@@ -79,6 +85,7 @@ class Task
     {
         $this->createdAt = new DateTime();
         $this->days = new ArrayCollection();
+        $this->subTasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -149,5 +156,10 @@ class Task
     public function getDays(): ArrayCollection
     {
         return $this->days;
+    }
+
+    public function getSubTasks(): Collection
+    {
+        return $this->subTasks;
     }
 }
