@@ -34,8 +34,8 @@ final class DayMapper
 
         $result->uuid         = $day['uuid'];
         $result->date         = $day['date']->format('Y-m-d');
-        $result->taskCount    = $day['taskCount'];
-        $result->totalMinutes = $day['totalMinutes'];
+        $result->taskCount    = $day['taskCount'] ?? 0;
+        $result->totalMinutes = $day['totalMinutes'] ?? 0;
 
         return $result;
     }

@@ -46,12 +46,13 @@ class DayRepository extends ServiceEntityRepository
             ->select('d.entryDate as date, d.uuid, count(t.id) as taskCount, sum(st.minutes) as totalMinutes')
             ->leftJoin('d.tasks', 't')
             ->leftJoin('t.subTasks', 'st')
-            ->andWhere('d.user = :user')
+            ->where('d.user = :user')
             ->setParameter('user', $user)
             ->orderBy('d.entryDate', 'DESC')
             ->setFirstResult(($page - 1) * $itemsPerPage)
             ->setMaxResults($itemsPerPage)
+            ->groupBy('d.id')
             ->getQuery()
-            ->getResult();
+            ->getArrayResult();
     }
 }
