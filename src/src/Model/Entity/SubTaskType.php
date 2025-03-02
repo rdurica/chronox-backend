@@ -1,32 +1,29 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Model\Entity;
 
+use App\Model\Entity\Traits\CreatedAt;
+use App\Model\Entity\Traits\Uuid;
 use App\Model\Repository\SubTaskTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SubTaskTypeRepository::class)]
 class SubTaskType
 {
+    use CreatedAt;
+    use Uuid;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['subTask:read', 'day:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['subTask:read', 'day:read'])]
     private ?string $name = null;
-    public function getId(): ?int
+
+    public function __construct()
     {
-        return $this->id;
+        $this->initializeUuid();
+        $this->initializeCreatedAt();
     }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-
 }

@@ -1,96 +1,45 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Model\Entity;
 
+use App\Model\Entity\Traits\CreatedAt;
+use App\Model\Entity\Traits\UpdatedAt;
+use App\Model\Entity\Traits\Uuid;
 use App\Model\Repository\TaskRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
-//#[ApiResource(
-//    operations: [
-//        new Post(
-//            processor: TaskProcessor::class
-//        ),
-//        new GetCollection(
-//            uriTemplate: '/tasks/opened',
-//            normalizationContext: ['groups' => ['task:opened']],
-//            denormalizationContext: ['groups' => ['task:write']],
-//            provider: TaskOpenedProvider::class,
-//        ),
-//        new GetCollection(
-//            normalizationContext: ['groups' => ['task:list']],
-//            denormalizationContext: ['groups' => ['task:write']],
-//            provider: TaskStateProvider::class,
-//        ),
-//        new Get(
-//            normalizationContext: ['groups' => ['task:read']],
-//            denormalizationContext: ['groups' => ['task:write']],
-//            security: "is_granted('VIEW', object)",
-//        ),
-//        new Delete(security: "is_granted('DELETE', object)"),
-//        new Patch(
-//            uriTemplate: '/tasks/addSubtask',
-//            normalizationContext: ['groups' => ['task:addSubtask']],
-//            security: "is_granted('EDIT', object)",
-//            input: AddSubTask::class,
-//            output: null,
-//            processor: TaskAddSubTaskProcessor::class,
-//        ),
-//        new Patch(
-//            uriTemplate: '/tasks/{id}/finish',
-//            normalizationContext: ['groups' => ['task:read']],
-//            denormalizationContext: ['groups' => ['task:write']],
-//            security: "is_granted('EDIT', object)",
-//            input: false,
-//            processor: TaskFinishProcessor::class,
-//        ),
-//    ],
-//    order: ['id' => 'ASC'],
-//)]
-#[ORM\Index(name: 'idx_uuid', columns: ['uuid'])]
 class Task
 {
+    use CreatedAt;
+    use UpdatedAt;
+    use Uuid;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['task:read', 'task:list', 'day:read', 'day:list', 'task:opened'])]
     private ?int $id = null;
 
-    #[ORM\Column(type: UuidType::NAME, unique: true, options: ['default' => 'UUID()'])]
-    private ?Uuid $uuid;
-
     #[ORM\Column(length: 255)]
-    #[Groups(['task:read', 'task:list', 'task:write', 'day:read', 'task:opened'])]
-    private ?string $name = null;
+    private string $title;
 
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['task:read', 'task:list', 'day:read'])]
-    private bool $finished = false;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['task:read', 'task:list', 'day:read'])]
-    private DateTime $createdAt;
+    private bool $finished;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['default' => null])]
-    #[Groups(['task:read', 'task:list', 'day:read'])]
     private DateTime $finishedAt;
 
     #[ORM\ManyToMany(targetEntity: Day::class, inversedBy: 'tasks')]
     #[ORM\JoinTable(name: 'day_tasks')]
-    #[Groups(['task:read'])]
     private Collection $days;
 
     #[ORM\OneToMany(targetEntity: SubTask::class, mappedBy: 'task')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['day:read', 'task:read', 'day:list'])]
     private Collection $subTasks;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
@@ -99,7 +48,8 @@ class Task
 
     public function __construct()
     {
-        $this->createdAt = new DateTime();
+        $this->initializeUuid();
+        $this->initializeCreatedAt();
         $this->days = new ArrayCollection();
         $this->subTasks = new ArrayCollection();
     }
@@ -109,19 +59,21 @@ class Task
         return $this->id;
     }
 
-    public function getUuid(): ?Uuid
+    public function setTitle(string $title): Task
     {
-        return $this->uuid;
+        $this->title = $title;
+
+        return $this;
     }
 
-    public function getName(): ?string
+    public function getTitle(): string
     {
-        return $this->name;
+        return $this->title;
     }
 
-    public function setName(string $name): static
+    public function setFinished(bool $finished): Task
     {
-        $this->name = $name;
+        $this->finished = $finished;
 
         return $this;
     }
@@ -131,38 +83,7 @@ class Task
         return $this->finished;
     }
 
-    public function setFinished(bool $finished): static
-    {
-        $this->finished = $finished;
-
-        return $this;
-    }
-
-    public function setUser(UserInterface $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getUser(): ?UserInterface
-    {
-        return $this->user;
-    }
-
-    public function getCreatedAt(): DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTime $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function setFinishedAt(DateTime $finishedAt): static
+    public function setFinishedAt(DateTime $finishedAt): Task
     {
         $this->finishedAt = $finishedAt;
 
@@ -174,9 +95,43 @@ class Task
         return $this->finishedAt;
     }
 
-    public function getDays(): ArrayCollection
+    public function setDays(Collection $days): Task
+    {
+        $this->days = $days;
+
+        return $this;
+    }
+
+    public function getDays(): Collection
     {
         return $this->days;
+    }
+
+    public function addDay(Day $day): Task
+    {
+        if (!$this->days->contains($day)) {
+            $this->days->add($day);
+            $day->addTask($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDay(Day $day): Task
+    {
+        if ($this->days->contains($day)) {
+            $this->days->removeElement($day);
+            $day->removeTask($this);
+        }
+
+        return $this;
+    }
+
+    public function setSubTasks(Collection $subTasks): Task
+    {
+        $this->subTasks = $subTasks;
+
+        return $this;
     }
 
     public function getSubTasks(): Collection
@@ -184,7 +139,7 @@ class Task
         return $this->subTasks;
     }
 
-    public function addSubTask(SubTask $subTask): self
+    public function addSubTask(SubTask $subTask): Task
     {
         if (!$this->subTasks->contains($subTask)) {
             $this->subTasks[] = $subTask;
@@ -192,5 +147,17 @@ class Task
         }
 
         return $this;
+    }
+
+    public function setUser(UserInterface $user): Task
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getUser(): UserInterface
+    {
+        return $this->user;
     }
 }

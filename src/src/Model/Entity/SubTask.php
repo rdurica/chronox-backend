@@ -2,29 +2,28 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Entity\Traits\CreatedAt;
+use App\Model\Entity\Traits\UpdatedAt;
+use App\Model\Entity\Traits\Uuid;
 use App\Model\Repository\SubTaskRepository;
-use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SubTaskRepository::class)]
 class SubTask
 {
+    use CreatedAt;
+    use UpdatedAt;
+    use Uuid;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['subTask:read', 'day:read'])]
     private ?int $id = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['subTask:read', 'day:read', 'task:read'])]
-    private DateTime $createdAt;
 
     #[ORM\ManyToOne(targetEntity: SubTaskType::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['subTask:read', 'day:read', 'task:read', 'task:addSubtask'])]
     private SubTaskType $subTaskType;
 
     #[ORM\ManyToOne(targetEntity: Task::class, inversedBy: 'subTasks')]
@@ -32,7 +31,6 @@ class SubTask
     private Task $task;
 
     #[ORM\Column(type: Types::FLOAT, options: ['default' => 0])]
-    #[Groups(['task:read', 'task:write', 'day:read', 'day:list', 'task:addSubtask'])]
     private ?float $minutes = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'users')]
@@ -40,39 +38,13 @@ class SubTask
 
     public function __construct()
     {
-        $this->createdAt = new DateTime();
+        $this->initializeUuid();
+        $this->initializeCreatedAt();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCreatedAt(): DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function getSubTaskType(): SubTaskType
-    {
-        return $this->subTaskType;
-    }
-
-    public function getUser(): UserInterface
-    {
-        return $this->user;
-    }
-
-    public function getMinutes(): ?float
-    {
-        return $this->minutes;
-    }
-
-    public function setCreatedAt(DateTime $createdAt): SubTask
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function setSubTaskType(SubTaskType $subTaskType): SubTask
@@ -82,11 +54,21 @@ class SubTask
         return $this;
     }
 
+    public function getSubTaskType(): SubTaskType
+    {
+        return $this->subTaskType;
+    }
+
     public function setTask(Task $task): SubTask
     {
         $this->task = $task;
 
         return $this;
+    }
+
+    public function getTask(): Task
+    {
+        return $this->task;
     }
 
     public function setMinutes(?float $minutes): SubTask
@@ -96,10 +78,20 @@ class SubTask
         return $this;
     }
 
+    public function getMinutes(): ?float
+    {
+        return $this->minutes;
+    }
+
     public function setUser(UserInterface $user): SubTask
     {
         $this->user = $user;
 
         return $this;
+    }
+
+    public function getUser(): UserInterface
+    {
+        return $this->user;
     }
 }
