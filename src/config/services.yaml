@@ -17,10 +17,6 @@ services:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
-            - '../src/Entity/'
+            - '../src/Model/Entity/'
+            - '../src/Model/Dto/'
             - '../src/Kernel.php'
-    App\Processor\DayProcessor:
-        arguments:
-            $security: '@security.helper'
-            $entityManager: '@doctrine.orm.entity_manager'
-        tags: ['api_platform.state_processor']

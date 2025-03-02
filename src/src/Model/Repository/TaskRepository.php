@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Model\Repository;
 
-use App\Entity\Task;
+use App\Model\Entity\Task;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,11 +18,25 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function getPaginator(UserInterface $user, int $page = 1, int $itemsPerPage = 20): Paginator
+    public function findUserTasks(UserInterface $user, int $page = 1, int $itemsPerPage = 20): Paginator
     {
         $queryBuilder = $this->createQueryBuilder('t')
             ->andWhere('t.user = :user')
             ->setParameter('user', $user)
+            ->orderBy('t.id', 'ASC')
+            ->setFirstResult(($page - 1) * $itemsPerPage)
+            ->setMaxResults($itemsPerPage);
+
+        return new Paginator($queryBuilder);
+    }
+
+    public function findOpenedTasks(UserInterface $user, int $page = 1, int $itemsPerPage = 20): Paginator
+    {
+        $queryBuilder = $this->createQueryBuilder('t')
+            ->andWhere('t.user = :user')
+            ->andWhere('t.finished = :status')
+            ->setParameter('user', $user)
+            ->setParameter('status', false)
             ->orderBy('t.id', 'ASC')
             ->setFirstResult(($page - 1) * $itemsPerPage)
             ->setMaxResults($itemsPerPage);

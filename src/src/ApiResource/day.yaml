@@ -1,0 +1,36 @@
+resources:
+  App\Model\Dto\Day:
+    operations:
+      ApiPlatform\Metadata\Post:
+        uriTemplate: "/days"
+        description: "Create a new day entry"
+        security: "is_granted('IS_AUTHENTICATED_FULLY')"
+        input: App\Model\Dto\Day
+        output: null
+        processor: App\Processor\Day\DayCreateProcessor
+        exceptionToStatus:
+          App\Exception\DayAlreadyExistException: 422
+        denormalizationContext:
+          groups: [ 'day:post' ]
+        normalizationContext:
+          groups: [ 'day:post', 'day:postResult' ]
+      ApiPlatform\Metadata\Get:
+        uriTemplate: "/days/{uuid}"
+        description: "Get day data"
+        security: "is_granted('IS_AUTHENTICATED_FULLY')"
+        input: null
+        output: App\Model\Dto\Day
+        provider: App\Providers\Day\DayGetProvider
+        processor: App\Processor\Day\DayGetProcessor
+        exceptionToStatus:
+          App\Exception\DayNotFoundException: 404
+        normalizationContext:
+          groups: [ 'day:get' ]
+      ApiPlatform\Metadata\GetCollection:
+        uriTemplate: "/days"
+        description: "Get list of days"
+        security: "is_granted('IS_AUTHENTICATED_FULLY')"
+        output: App\Model\Dto\Day
+        provider: App\Providers\Day\DayListProvider
+        normalizationContext:
+          groups: [ 'day:list' ]

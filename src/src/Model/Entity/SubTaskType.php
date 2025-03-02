@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Model\Entity;
 
-use App\Repository\SubTaskTypeRepository;
+use App\Model\Repository\SubTaskTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -18,7 +18,6 @@ class SubTaskType
     #[ORM\Column(length: 255)]
     #[Groups(['subTask:read', 'day:read'])]
     private ?string $name = null;
-
     public function getId(): ?int
     {
         return $this->id;
