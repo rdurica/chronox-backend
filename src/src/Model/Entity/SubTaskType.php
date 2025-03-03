@@ -19,11 +19,28 @@ class SubTaskType
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private string $title;
 
     public function __construct()
     {
         $this->initializeUuid();
         $this->initializeCreatedAt();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setTitle(string $title): SubTaskType
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
     }
 }

@@ -23,24 +23,22 @@ resources:
         input: null
         output: App\Model\Dto\Day
         provider: App\Providers\Day\DayGetProvider
-        processor: App\Processor\Day\DayGetProcessor
         exceptionToStatus:
           App\Exception\DayNotFoundException: 404
         normalizationContext:
-          groups: [ 'day:details' ]
-#      -
-#        class: ApiPlatform\Metadata\Get
-#        uriTemplate: "/days/{uuid}/details"
-#        description: "Get day data"
-#        security: "is_granted('IS_AUTHENTICATED_FULLY')"
-#        input: null
-#        output: App\Model\Dto\Day
-#        provider: App\Providers\Day\DayGetProvider
-#        processor: App\Processor\Day\DayGetProcessor
-#        exceptionToStatus:
-#          App\Exception\DayNotFoundException: 404
-#        normalizationContext:
-#          groups: [ 'day:get' ]
+          groups: [ 'day:get' ]
+      -
+        class: ApiPlatform\Metadata\Get
+        uriTemplate: "/days/{uuid}/detail"
+        description: "Get detailed day info with tasks."
+        security: "is_granted('IS_AUTHENTICATED_FULLY')"
+        input: null
+        output: App\Model\Dto\Day
+        provider: App\Providers\Day\DayDetailProvider
+        exceptionToStatus:
+          App\Exception\DayNotFoundException: 404
+        normalizationContext:
+          groups: [ 'day:get', 'day:detail' ]
       -
         class: ApiPlatform\Metadata\GetCollection
         uriTemplate: "/days"

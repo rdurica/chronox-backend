@@ -8,6 +8,7 @@ use App\Model\Dto\Day;
 use App\Model\Entity\Day as DayEntity;
 use App\Model\Mapper\DayMapper;
 use App\Model\Repository\DayRepository;
+use App\Model\Repository\TaskRepository;
 use App\Security\ApiSecurity;
 use DateMalformedStringException;
 use DateTime;
@@ -26,6 +27,7 @@ final class DayService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private DayRepository $dayRepository,
+        private TaskRepository $taskRepository,
         private ApiSecurity $security
     )
     {
@@ -60,13 +62,30 @@ final class DayService
     public function getByUuid(Uuid $uuid): Day
     {
         $user = $this->security->getUser();
-        $day = $this->dayRepository->findByUuid($user, $uuid);
+        $day = $this->dayRepository->findBaseData($user, $uuid);
 
         if($day ===  null) {
             throw new DayNotFoundException();
         }
 
-        return DayMapper::mapArray($day);
+        return DayMapper::mapBaseDataArray($day);
+    }
+
+    /**
+     * @throws DayNotFoundException
+     */
+    public function getDetail(Uuid $uuid): Day
+    {
+        $user = $this->security->getUser();
+        $day = $this->dayRepository->findBaseData($user, $uuid);
+
+        if($day ===  null) {
+            throw new DayNotFoundException();
+        }
+
+        $tasks = $this->taskRepository->findByDateId($day['id']);
+
+        return DayMapper::mapDetailData($day, $tasks);
     }
 
     /**
@@ -82,7 +101,7 @@ final class DayService
 
         $result = [];
         foreach ($data as $day) {
-            $result[] = DayMapper::mapArray($day);
+            $result[] = DayMapper::mapBaseDataArray($day);
         }
 
         return $result;

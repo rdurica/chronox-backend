@@ -15,4 +15,22 @@ class TaskRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Task::class);
     }
+
+    /**
+     * @param int $dateId
+     *
+     * @return Task[]
+     */
+    public function findByDateId(int $dateId): array
+    {
+        /** @var Task[] $result */
+        $result = $this->createQueryBuilder('t')
+            ->leftJoin('t.days', 'd')
+            ->where('d.id = :dateId')
+            ->setParameter('dateId', $dateId)
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
 }

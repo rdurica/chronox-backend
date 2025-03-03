@@ -31,4 +31,8 @@ final class Day
     /** @var float Total spent time. */
     #[Groups(['day:get', 'day:list'])]
     public float $totalMinutes;
+
+    /** @var Task[] Tasks related to day. */
+    #[Groups(['day:detail'])]
+    public array $tasks =  [];
 }

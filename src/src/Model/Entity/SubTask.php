@@ -31,7 +31,7 @@ class SubTask
     private Task $task;
 
     #[ORM\Column(type: Types::FLOAT, options: ['default' => 0])]
-    private ?float $minutes = null;
+    private float $minutes;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'users')]
     private UserInterface $user;
@@ -71,14 +71,14 @@ class SubTask
         return $this->task;
     }
 
-    public function setMinutes(?float $minutes): SubTask
+    public function setMinutes(float $minutes): SubTask
     {
         $this->minutes = $minutes;
 
         return $this;
     }
 
-    public function getMinutes(): ?float
+    public function getMinutes(): float
     {
         return $this->minutes;
     }

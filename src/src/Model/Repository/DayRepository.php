@@ -20,13 +20,13 @@ class DayRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array{date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}|null
+     * @return array{id: int, date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}|null
      */
-    public function findByUuid(UserInterface $user, Uuid $uuid): ?array
+    public function findBaseData(UserInterface $user, Uuid $uuid): ?array
     {
-        /** @var array{date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}|null $result */
+        /** @var array{id: int, date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}|null $result */
         $result = $this->createQueryBuilder('d')
-            ->select('d.entryDate as date, d.uuid, count(t.id) as taskCount, sum(st.minutes) as totalMinutes')
+            ->select('d.id, d.entryDate as date, d.uuid, count(t.id) as taskCount, sum(st.minutes) as totalMinutes')
             ->leftJoin('d.tasks', 't')
             ->leftJoin('t.subTasks', 'st')
             ->andWhere('d.user = :user')
@@ -39,6 +39,29 @@ class DayRepository extends ServiceEntityRepository
 
         return $result;
     }
+//
+//    /**
+//     * @return array{dayId: int, date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}|null
+//     */
+//    public function findDetailedData(UserInterface $user, Uuid $uuid): ?array
+//    {
+//        /** @var array{date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}|null $result */
+//        $result = $this->createQueryBuilder('d')
+//            ->select('d.id as dayId, d.entryDate as date, d.uuid, count(t.id) as taskCount, sum(st.minutes) as totalMinutes, t.uuid as taskUuid')
+//            ->leftJoin('d.tasks', 't')
+//            ->leftJoin('t.subTasks', 'st')
+//            ->andWhere('d.user = :user')
+//            ->andWhere('d.uuid = :uuid')
+//            ->setParameter('user', $user)
+//            ->setParameter('uuid', $uuid->toBinary())
+//            ->groupBy('t.id')
+//            ->getQuery()
+//            ->getArrayResult();
+//
+//        dump($result);
+//
+//        return $result;
+//    }
 
     /**
      * @return array<array{date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}>
