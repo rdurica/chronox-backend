@@ -16,9 +16,9 @@ final class SubTaskType
 {
     /** @var Uuid Day UUID. */
     #[Assert\Uuid]
-    #[Groups(['day:detail'])]
+    #[Groups(['day:get'])]
     public Uuid $uuid;
 
-    #[Groups(['day:detail'])]
+    #[Groups(['day:get'])]
     public string $title;
 }

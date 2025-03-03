@@ -16,16 +16,16 @@ final class Task
 {
     /** @var Uuid Day UUID. */
     #[Assert\Uuid]
-    #[Groups(['day:detail'])]
+    #[Groups(['day:get'])]
     public Uuid $uuid;
 
-    #[Groups(['day:detail'])]
+    #[Groups(['day:get'])]
     public string $title;
 
-    #[Groups(['day:detail'])]
+    #[Groups(['day:get'])]
     public bool $finished;
 
     /** @var SubTask[] */
-    #[Groups(['day:detail'])]
+    #[Groups(['day:get'])]
     public array $subTasks = [];
 }

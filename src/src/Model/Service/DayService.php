@@ -59,21 +59,6 @@ final class DayService
     /**
      * @throws DayNotFoundException
      */
-    public function getByUuid(Uuid $uuid): Day
-    {
-        $user = $this->security->getUser();
-        $day = $this->dayRepository->findBaseData($user, $uuid);
-
-        if($day ===  null) {
-            throw new DayNotFoundException();
-        }
-
-        return DayMapper::mapBaseDataArray($day);
-    }
-
-    /**
-     * @throws DayNotFoundException
-     */
     public function getDetail(Uuid $uuid): Day
     {
         $user = $this->security->getUser();

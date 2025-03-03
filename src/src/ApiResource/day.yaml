@@ -18,7 +18,7 @@ resources:
       -
         class: ApiPlatform\Metadata\Get
         uriTemplate: "/days/{uuid}"
-        description: "Get day data"
+        description: "Get detailed day info with tasks."
         security: "is_granted('IS_AUTHENTICATED_FULLY')"
         input: null
         output: App\Model\Dto\Day
@@ -26,19 +26,7 @@ resources:
         exceptionToStatus:
           App\Exception\DayNotFoundException: 404
         normalizationContext:
-          groups: [ 'day:get' ]
-      -
-        class: ApiPlatform\Metadata\Get
-        uriTemplate: "/days/{uuid}/detail"
-        description: "Get detailed day info with tasks."
-        security: "is_granted('IS_AUTHENTICATED_FULLY')"
-        input: null
-        output: App\Model\Dto\Day
-        provider: App\Providers\Day\DayDetailProvider
-        exceptionToStatus:
-          App\Exception\DayNotFoundException: 404
-        normalizationContext:
-          groups: [ 'day:get', 'day:detail' ]
+          groups: [ 'day:get']
       -
         class: ApiPlatform\Metadata\GetCollection
         uriTemplate: "/days"

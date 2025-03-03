@@ -61,15 +61,15 @@ final class DayMapper
             $taskDto->finished = $task->isFinished();
 
             foreach ($task->getSubTasks() as $subTask) {
-                $subTaskDto = new SubTask();
-                $subTaskDto->uuid = $subTask->getUuid();
-                $subTaskDto->minutes = $subTask->getMinutes();
-
                 $subTaskTypeDto = new SubTaskType();
                 $subTaskTypeDto->uuid = $subTask->getSubTaskType()->getUuid();
                 $subTaskTypeDto->title = $subTask->getSubTaskType()->getTitle();
 
+                $subTaskDto = new SubTask();
+                $subTaskDto->uuid = $subTask->getUuid();
+                $subTaskDto->minutes = $subTask->getMinutes();
                 $subTaskDto->type = $subTaskTypeDto;
+
                 $taskDto->subTasks[] = $subTaskDto;
             }
 

@@ -16,12 +16,12 @@ final class SubTask
 {
     /** @var Uuid Day UUID. */
     #[Assert\Uuid]
-    #[Groups(['day:detail'])]
+    #[Groups(['day:get'])]
     public Uuid $uuid;
 
-    #[Groups(['day:detail'])]
+    #[Groups(['day:get'])]
     public float $minutes;
 
-    #[Groups(['day:detail'])]
+    #[Groups(['day:get'])]
     public SubTaskType $type;
 }

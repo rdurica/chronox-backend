@@ -33,6 +33,6 @@ final class Day
     public float $totalMinutes;
 
     /** @var Task[] Tasks related to day. */
-    #[Groups(['day:detail'])]
+    #[Groups(['day:get'])]
     public array $tasks =  [];
 }
