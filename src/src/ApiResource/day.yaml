@@ -1,7 +1,8 @@
 resources:
   App\Model\Dto\Day:
     operations:
-      ApiPlatform\Metadata\Post:
+      -
+        class: ApiPlatform\Metadata\Post
         uriTemplate: "/days"
         description: "Create a new day entry"
         security: "is_granted('IS_AUTHENTICATED_FULLY')"
@@ -14,7 +15,8 @@ resources:
           groups: [ 'day:post' ]
         normalizationContext:
           groups: [ 'day:post', 'day:postResult' ]
-      ApiPlatform\Metadata\Get:
+      -
+        class: ApiPlatform\Metadata\Get
         uriTemplate: "/days/{uuid}"
         description: "Get day data"
         security: "is_granted('IS_AUTHENTICATED_FULLY')"
@@ -25,8 +27,22 @@ resources:
         exceptionToStatus:
           App\Exception\DayNotFoundException: 404
         normalizationContext:
-          groups: [ 'day:get' ]
-      ApiPlatform\Metadata\GetCollection:
+          groups: [ 'day:details' ]
+#      -
+#        class: ApiPlatform\Metadata\Get
+#        uriTemplate: "/days/{uuid}/details"
+#        description: "Get day data"
+#        security: "is_granted('IS_AUTHENTICATED_FULLY')"
+#        input: null
+#        output: App\Model\Dto\Day
+#        provider: App\Providers\Day\DayGetProvider
+#        processor: App\Processor\Day\DayGetProcessor
+#        exceptionToStatus:
+#          App\Exception\DayNotFoundException: 404
+#        normalizationContext:
+#          groups: [ 'day:get' ]
+      -
+        class: ApiPlatform\Metadata\GetCollection
         uriTemplate: "/days"
         description: "Get list of days"
         security: "is_granted('IS_AUTHENTICATED_FULLY')"

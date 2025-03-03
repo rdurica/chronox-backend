@@ -26,7 +26,7 @@ final class DayMapper
     }
 
     /**
-     * @param array{date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int} $day
+     * @param array{date: DateTime, uuid: Uuid, taskCount: int|null, totalMinutes: int|null} $day
      */
     public static function mapArray(array $day): DayDto
     {

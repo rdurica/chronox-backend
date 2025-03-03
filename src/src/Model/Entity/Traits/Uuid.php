@@ -23,7 +23,7 @@ trait Uuid
     #[ORM\Column(type: UuidType::NAME, unique: true, options: ['default' => 'UUID()'])]
     private SymfonyUuid $uuid;
 
-    public function getUuid(): ?SymfonyUuid
+    public function getUuid(): SymfonyUuid
     {
         return $this->uuid;
     }

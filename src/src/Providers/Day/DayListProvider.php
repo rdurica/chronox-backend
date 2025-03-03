@@ -4,7 +4,7 @@ namespace App\Providers\Day;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\Model\Entity\Day;
+use App\Model\Dto\Day;
 use App\Model\Service\DayService;
 
 /**
@@ -15,6 +15,7 @@ use App\Model\Service\DayService;
  *
  * @copyright Copyright (c) 2025, Robert Durica
  * @since     2025-02-10
+ * @implements ProviderInterface<Day>
  */
 class DayListProvider implements ProviderInterface
 {
@@ -22,11 +23,18 @@ class DayListProvider implements ProviderInterface
     {
     }
 
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
+    /**
+     * @param Operation                                                    $operation
+     * @param array<string, mixed>                                         $uriVariables
+     * @param array<string, array{page: int|null, itemsPerPage: int|null}> $context
+     *
+     * @return Day[]
+     */
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
         $page = $context['filters']['page'] ?? 1;
         $itemsPerPage = $context['filters']['itemsPerPage'] ?? 20;
 
-        return $this->dayService->getPaginatedData((int) $page, (int) $itemsPerPage);
+        return $this->dayService->getPaginatedData((int)$page, (int)$itemsPerPage);
     }
 }

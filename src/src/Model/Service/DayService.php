@@ -5,15 +5,14 @@ namespace App\Model\Service;
 use App\Exception\DayAlreadyExistException;
 use App\Exception\DayNotFoundException;
 use App\Model\Dto\Day;
-use App\Model\Dto\Day as DayDto;
 use App\Model\Entity\Day as DayEntity;
 use App\Model\Mapper\DayMapper;
 use App\Model\Repository\DayRepository;
+use App\Security\ApiSecurity;
 use DateMalformedStringException;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Uid\Uuid;
 
 /**
@@ -27,7 +26,7 @@ final class DayService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private DayRepository $dayRepository,
-        private Security $security
+        private ApiSecurity $security
     )
     {
     }
@@ -70,6 +69,12 @@ final class DayService
         return DayMapper::mapArray($day);
     }
 
+    /**
+     * @param int $page
+     * @param int $itemsPerPage
+     *
+     * @return Day[]
+     */
     public function getPaginatedData(int $page, int $itemsPerPage): array
     {
         $user = $this->security->getUser();

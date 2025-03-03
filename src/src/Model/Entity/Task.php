@@ -34,10 +34,12 @@ class Task
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['default' => null])]
     private DateTime $finishedAt;
 
+    /** @var Collection<int, Day> */
     #[ORM\ManyToMany(targetEntity: Day::class, inversedBy: 'tasks')]
     #[ORM\JoinTable(name: 'day_tasks')]
     private Collection $days;
 
+    /** @var Collection<int, SubTask>  */
     #[ORM\OneToMany(targetEntity: SubTask::class, mappedBy: 'task')]
     #[ORM\JoinColumn(nullable: false)]
     private Collection $subTasks;
@@ -95,6 +97,9 @@ class Task
         return $this->finishedAt;
     }
 
+    /**
+     * @param Collection<int, Day> $days
+     */
     public function setDays(Collection $days): Task
     {
         $this->days = $days;
@@ -102,6 +107,9 @@ class Task
         return $this;
     }
 
+    /**
+     * @return Collection<int, Day>
+     */
     public function getDays(): Collection
     {
         return $this->days;
@@ -127,6 +135,9 @@ class Task
         return $this;
     }
 
+    /**
+     * @param Collection<int, SubTask> $subTasks
+     */
     public function setSubTasks(Collection $subTasks): Task
     {
         $this->subTasks = $subTasks;
@@ -134,6 +145,9 @@ class Task
         return $this;
     }
 
+    /**
+     * @return Collection<int, SubTask>
+     */
     public function getSubTasks(): Collection
     {
         return $this->subTasks;

@@ -1,11 +1,8 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Model\Entity;
 
 use App\Model\Entity\Traits\CreatedAt;
-use App\Model\Entity\Traits\UpdatedAt;
 use App\Model\Entity\Traits\Uuid;
 use App\Model\Repository\DayRepository;
 use DateTimeInterface;
@@ -26,7 +23,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class Day
 {
     use CreatedAt;
-    use UpdatedAt;
     use Uuid;
 
     #[ORM\Id]
@@ -40,6 +36,7 @@ class Day
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'entryDays')]
     private UserInterface $user;
 
+    /** @var Collection<int, Task> */
     #[ORM\ManyToMany(targetEntity: Task::class, mappedBy: 'days')]
     private Collection $tasks;
 
@@ -79,6 +76,9 @@ class Day
         return $this->user;
     }
 
+    /**
+     * @param Collection<int, Task> $tasks
+     */
     public function setTasks(Collection $tasks): Day
     {
         $this->tasks = $tasks;
@@ -86,6 +86,9 @@ class Day
         return $this;
     }
 
+    /**
+     * @return Collection<int, Task>
+     */
     public function getTasks(): Collection
     {
         return $this->tasks;

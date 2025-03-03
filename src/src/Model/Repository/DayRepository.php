@@ -24,7 +24,8 @@ class DayRepository extends ServiceEntityRepository
      */
     public function findByUuid(UserInterface $user, Uuid $uuid): ?array
     {
-        return $this->createQueryBuilder('d')
+        /** @var array{date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}|null $result */
+        $result = $this->createQueryBuilder('d')
             ->select('d.entryDate as date, d.uuid, count(t.id) as taskCount, sum(st.minutes) as totalMinutes')
             ->leftJoin('d.tasks', 't')
             ->leftJoin('t.subTasks', 'st')
@@ -35,6 +36,8 @@ class DayRepository extends ServiceEntityRepository
             ->groupBy('d.id')
             ->getQuery()
             ->getOneOrNullResult();
+
+        return $result;
     }
 
     /**
@@ -42,7 +45,8 @@ class DayRepository extends ServiceEntityRepository
      */
     public function getPaginatedData(UserInterface $user, int $page = 1, int $itemsPerPage = 20): array
     {
-        return $this->createQueryBuilder('d')
+        /** @var array<array{date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}> $result */
+        $result = $this->createQueryBuilder('d')
             ->select('d.entryDate as date, d.uuid, count(t.id) as taskCount, sum(st.minutes) as totalMinutes')
             ->leftJoin('d.tasks', 't')
             ->leftJoin('t.subTasks', 'st')
@@ -54,5 +58,7 @@ class DayRepository extends ServiceEntityRepository
             ->groupBy('d.id')
             ->getQuery()
             ->getArrayResult();
+
+        return $result;
     }
 }

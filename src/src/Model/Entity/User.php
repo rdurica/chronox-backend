@@ -29,15 +29,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles.
-     */
+    /** @var list<string> The user roles. */
     #[ORM\Column]
     private array $roles = [];
 
     #[ORM\Column]
     private ?string $password = null;
 
+    /** @var Collection<int, Day> $entryDays */
     #[ORM\OneToMany(targetEntity: Day::class, mappedBy: 'user')]
     private Collection $entryDays;
 
@@ -72,9 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
+     * @return string
      */
     public function getUserIdentifier(): string
     {
@@ -84,7 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      *
-     * @return list<string>
+     * @return non-empty-array<string>
      */
     public function getRoles(): array
     {
