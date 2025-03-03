@@ -54,6 +54,7 @@ class Task
         $this->initializeCreatedAt();
         $this->days = new ArrayCollection();
         $this->subTasks = new ArrayCollection();
+        $this->finished = false;
     }
 
     public function getId(): ?int

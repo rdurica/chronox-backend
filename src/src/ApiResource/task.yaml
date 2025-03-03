@@ -1,0 +1,17 @@
+resources:
+  App\Model\Dto\Task:
+    operations:
+      -
+        class: ApiPlatform\Metadata\Post
+        uriTemplate: "/tasks"
+        description: "Create a new task"
+        security: "is_granted('IS_AUTHENTICATED_FULLY')"
+        input: App\Model\Dto\Task
+        output: null
+        processor: App\Processor\Task\TaskCreateProcessor
+        exceptionToStatus:
+          App\Exception\DayNotFoundException: 422
+        denormalizationContext:
+          groups: [ 'task:post' ]
+        normalizationContext:
+          groups: [ 'task:postResult' ]

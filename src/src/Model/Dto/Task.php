@@ -16,13 +16,18 @@ final class Task
 {
     /** @var Uuid Day UUID. */
     #[Assert\Uuid]
-    #[Groups(['day:get'])]
+    #[Groups(['day:get', 'task:postResult'])]
     public Uuid $uuid;
 
-    #[Groups(['day:get'])]
+    #[Assert\Length(min: 10, max: 255)]
+    #[Groups(['day:get', 'task:post', 'task:postResult'])]
     public string $title;
 
-    #[Groups(['day:get'])]
+    #[Assert\Uuid]
+    #[Groups(['task:post'])]
+    public Uuid $dayUuid;
+
+    #[Groups(['day:get', 'task:postResult'])]
     public bool $finished;
 
     /** @var SubTask[] */

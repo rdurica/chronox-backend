@@ -2,6 +2,7 @@
 
 namespace App\Model\Repository;
 
+use App\Exception\DayNotFoundException;
 use App\Model\Entity\Day;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -17,6 +18,27 @@ class DayRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Day::class);
+    }
+
+    /**
+     * @throws DayNotFoundException
+     */
+    public function fetchByUuid(UserInterface $user, Uuid $uuid): Day
+    {
+        /** @var ?Day $result */
+        $result = $this->createQueryBuilder('d')
+            ->andWhere('d.uuid = :uuid')
+            ->andWhere('d.user = :user')
+            ->setParameter('uuid', $uuid->toBinary())
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($result === null) {
+            throw new DayNotFoundException();
+        }
+
+        return $result;
     }
 
     /**
@@ -39,29 +61,6 @@ class DayRepository extends ServiceEntityRepository
 
         return $result;
     }
-//
-//    /**
-//     * @return array{dayId: int, date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}|null
-//     */
-//    public function findDetailedData(UserInterface $user, Uuid $uuid): ?array
-//    {
-//        /** @var array{date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}|null $result */
-//        $result = $this->createQueryBuilder('d')
-//            ->select('d.id as dayId, d.entryDate as date, d.uuid, count(t.id) as taskCount, sum(st.minutes) as totalMinutes, t.uuid as taskUuid')
-//            ->leftJoin('d.tasks', 't')
-//            ->leftJoin('t.subTasks', 'st')
-//            ->andWhere('d.user = :user')
-//            ->andWhere('d.uuid = :uuid')
-//            ->setParameter('user', $user)
-//            ->setParameter('uuid', $uuid->toBinary())
-//            ->groupBy('t.id')
-//            ->getQuery()
-//            ->getArrayResult();
-//
-//        dump($result);
-//
-//        return $result;
-//    }
 
     /**
      * @return array<array{date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}>
