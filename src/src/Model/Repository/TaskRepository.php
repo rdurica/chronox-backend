@@ -2,9 +2,12 @@
 
 namespace App\Model\Repository;
 
+use App\Exception\TaskNotFoundException;
 use App\Model\Entity\Task;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<Task>
@@ -16,6 +19,26 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    /**
+     * @throws TaskNotFoundException
+     */
+    public function fetchByUuid(UserInterface $user, Uuid $uuid): Task
+    {
+        /** @var ?Task $result */
+        $result = $this->createQueryBuilder('t')
+            ->andWhere('t.uuid = :uuid')
+            ->andWhere('t.user = :user')
+            ->setParameter('uuid', $uuid->toBinary())
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($result === null) {
+            throw new TaskNotFoundException();
+        }
+
+        return $result;
+    }
     /**
      * @param int $dateId
      *

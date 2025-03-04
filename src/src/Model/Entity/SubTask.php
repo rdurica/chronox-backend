@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: SubTaskRepository::class)]
 #[ORM\UniqueConstraint(name: 'uq_sub_task_type__day__task', columns: ['sub_task_type_id', 'day_id', 'task_id'])]
 class SubTask
@@ -64,6 +65,18 @@ class SubTask
         return $this->subTaskType;
     }
 
+    public function setDay(Day $day): SubTask
+    {
+        $this->day = $day;
+
+        return $this;
+    }
+
+    public function getDay(): Day
+    {
+        return $this->day;
+    }
+
     public function setTask(Task $task): SubTask
     {
         $this->task = $task;
@@ -86,6 +99,13 @@ class SubTask
     public function getMinutes(): float
     {
         return $this->minutes;
+    }
+
+    public function addMinutes(float $minutes): SubTask
+    {
+        $this->minutes += $minutes;
+
+        return $this;
     }
 
     public function setUser(UserInterface $user): SubTask

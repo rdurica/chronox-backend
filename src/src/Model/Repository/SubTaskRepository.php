@@ -2,9 +2,12 @@
 
 namespace App\Model\Repository;
 
+use App\Exception\SubTaskNotFoundException;
 use App\Model\Entity\SubTask;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<SubTask>
@@ -16,28 +19,24 @@ class SubTaskRepository extends ServiceEntityRepository
         parent::__construct($registry, SubTask::class);
     }
 
-    //    /**
-    //     * @return SubTask[] Returns an array of SubTask objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @throws SubTaskNotFoundException
+     */
+    public function fetchByUuid(UserInterface $user, Uuid $uuid): SubTask
+    {
+        /** @var SubTask|null $data */
+        $data = $this->createQueryBuilder('s')
+            ->where('s.user = :user')
+            ->andWhere('s.uuid = :uuid')
+            ->setParameter('user', $user)
+            ->setParameter('uuid', $uuid->toBinary())
+            ->getQuery()
+            ->getOneOrNullResult();
 
-    //    public function findOneBySomeField($value): ?SubTask
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($data === null) {
+            throw new SubTaskNotFoundException();
+        }
+
+        return $data;
+    }
 }

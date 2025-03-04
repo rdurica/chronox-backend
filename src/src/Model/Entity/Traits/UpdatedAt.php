@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  * @copyright Copyright (c) 2025, Robert Durica
  * @since     2025-03-02
  */
-#[ORM\HasLifecycleCallbacks]
 trait UpdatedAt
 {
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -23,7 +22,7 @@ trait UpdatedAt
         return $this->updatedAt;
     }
 
-    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function onPrePersist(): void
     {
         $this->updatedAt = new DateTime();

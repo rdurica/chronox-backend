@@ -13,13 +13,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @since     2025-03-03
  */
 final class SubTask
-{
-    /** @var Uuid Day UUID. */
+{    /** @var Uuid Day UUID. */
     #[Assert\Uuid]
-    #[Groups(['day:get'])]
+    #[Groups(['day:get', 'subTask:postResult'])]
     public Uuid $uuid;
 
-    #[Groups(['day:get'])]
+    #[Groups(['day:get', 'subTask:postResult'])]
     public float $minutes;
 
     #[Groups(['day:get'])]

@@ -2,9 +2,11 @@
 
 namespace App\Model\Repository;
 
+use App\Exception\SubTaskTypeNotFoundException;
 use App\Model\Entity\SubTaskType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<SubTaskType>
@@ -16,28 +18,22 @@ class SubTaskTypeRepository extends ServiceEntityRepository
         parent::__construct($registry, SubTaskType::class);
     }
 
-    //    /**
-    //     * @return SubTaskType[] Returns an array of SubTaskType objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @throws SubTaskTypeNotFoundException
+     */
+    public function fetchByUuid(Uuid $uuid): SubTaskType
+    {
+        /** @var ?SubTaskType $result */
+        $result = $this->createQueryBuilder('stt')
+            ->where('stt.uuid = :uuid')
+            ->setParameter('uuid', $uuid->toBinary())
+            ->getQuery()
+            ->getOneOrNullResult();
 
-    //    public function findOneBySomeField($value): ?SubTaskType
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($result === null) {
+            throw new SubTaskTypeNotFoundException();
+        }
+
+        return $result;
+    }
 }

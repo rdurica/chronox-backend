@@ -1,0 +1,25 @@
+resources:
+  App\Model\Dto\SubTask:
+    operations:
+      -
+        class: ApiPlatform\Metadata\Post
+        uriTemplate: "/sub-tasks"
+        description: "Create a new subtask"
+        security: "is_granted('IS_AUTHENTICATED_FULLY')"
+        input: App\Model\Dto\SubTaskPost
+        output: App\Model\Dto\SubTask
+        processor: App\Processor\SubTask\SubTaskPostProcessor
+        exceptionToStatus:
+          App\Exception\SubTaskAlreadyExistException: 404
+        normalizationContext:
+          groups: [ 'subTask:postResult' ]
+      -
+        class: ApiPlatform\Metadata\Patch
+        uriTemplate: "/sub-tasks"
+        description: "Update logged minutes"
+        security: "is_granted('IS_AUTHENTICATED_FULLY')"
+        input: App\Model\Dto\SubTaskPatch
+        output: App\Model\Dto\SubTask
+        processor: App\Processor\SubTask\SubTaskPatchProcessor
+        exceptionToStatus:
+          App\Exception\SubTaskNotFoundException: 404
