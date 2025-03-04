@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: SubTaskRepository::class)]
+#[ORM\UniqueConstraint(name: 'uq_sub_task_type__day__task', columns: ['sub_task_type_id', 'day_id', 'task_id'])]
 class SubTask
 {
     use CreatedAt;

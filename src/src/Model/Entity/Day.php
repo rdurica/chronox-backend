@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @since     2025-02-10
  */
 #[ORM\Entity(repositoryClass: DayRepository::class)]
-#[ORM\UniqueConstraint(name: 'user_entry_date_uq', columns: ['user_id', 'entry_date'])]
+#[ORM\UniqueConstraint(name: 'uq_user__entry_date', columns: ['user_id', 'entry_date'])]
 class Day
 {
     use CreatedAt;

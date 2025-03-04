@@ -8,6 +8,7 @@ use App\Model\Repository\SubTaskTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SubTaskTypeRepository::class)]
+#[ORM\UniqueConstraint(name: 'uq_title', columns: ['title'])]
 class SubTaskType
 {
     use CreatedAt;
