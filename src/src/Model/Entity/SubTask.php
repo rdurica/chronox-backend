@@ -26,6 +26,10 @@ class SubTask
     #[ORM\JoinColumn(nullable: false)]
     private SubTaskType $subTaskType;
 
+    #[ORM\ManyToOne(targetEntity: Day::class, inversedBy: 'days')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Day $day;
+
     #[ORM\ManyToOne(targetEntity: Task::class, inversedBy: 'subTasks')]
     #[ORM\JoinColumn(nullable: false)]
     private Task $task;

@@ -26,8 +26,11 @@ class TaskRepository extends ServiceEntityRepository
         /** @var Task[] $result */
         $result = $this->createQueryBuilder('t')
             ->leftJoin('t.days', 'd')
+            ->leftJoin('t.subTasks', 'st')
             ->where('d.id = :dateId')
+            ->andWhere('st.day = :dateId')
             ->setParameter('dateId', $dateId)
+            ->addSelect('st')
             ->getQuery()
             ->getResult();
 
