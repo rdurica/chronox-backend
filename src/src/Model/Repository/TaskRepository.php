@@ -51,9 +51,9 @@ class TaskRepository extends ServiceEntityRepository
             ->leftJoin('t.days', 'd')
             ->leftJoin('t.subTasks', 'st')
             ->where('d.id = :dateId')
-            ->andWhere('st.day = :dateId')
             ->setParameter('dateId', $dateId)
             ->addSelect('st')
+            ->orderBy('t.id', 'DESC')
             ->getQuery()
             ->getResult();
 

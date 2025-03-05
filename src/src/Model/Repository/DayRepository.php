@@ -48,7 +48,7 @@ class DayRepository extends ServiceEntityRepository
     {
         /** @var array{id: int, date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}|null $result */
         $result = $this->createQueryBuilder('d')
-            ->select('d.id, d.entryDate as date, d.uuid, count(t.id) as taskCount, sum(st.minutes) as totalMinutes')
+            ->select('d.id, d.entryDate as date, d.uuid, count(DISTINCT t.id) as taskCount, sum(st.minutes) as totalMinutes')
             ->leftJoin('d.tasks', 't')
             ->leftJoin('t.subTasks', 'st', 'WITH', 'st.day = d.id')
             ->andWhere('d.user = :user')
@@ -69,7 +69,7 @@ class DayRepository extends ServiceEntityRepository
     {
         /** @var array<array{date: DateTime, uuid: Uuid, taskCount: int, totalMinutes: int}> $result */
         $result = $this->createQueryBuilder('d')
-            ->select('d.entryDate as date, d.uuid, count(t.id) as taskCount, sum(st.minutes) as totalMinutes')
+            ->select('d.entryDate as date, d.uuid, count(DISTINCT t.id) as taskCount, sum(st.minutes) as totalMinutes')
             ->leftJoin('d.tasks', 't')
             ->leftJoin('t.subTasks', 'st', 'WITH', 'st.day = d.id')
             ->where('d.user = :user')

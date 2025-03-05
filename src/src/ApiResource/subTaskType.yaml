@@ -1,0 +1,12 @@
+resources:
+  App\Model\Dto\SubTaskType:
+    operations:
+      -
+        class: ApiPlatform\Metadata\GetCollection
+        uriTemplate: "/sub-task-types"
+        description: "Get list of days"
+        security: "is_granted('IS_AUTHENTICATED_FULLY')"
+        input: null
+        output: App\Model\Dto\SubTaskType
+        provider: App\Providers\SubTaskType\SubTaskTypeCollectionProvider
+        paginationEnabled: false
