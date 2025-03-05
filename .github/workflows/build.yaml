@@ -29,7 +29,7 @@ jobs:
         id: composer-cache
         uses: actions/cache@v3
         with:
-          path: /tmp/.buildx-cache
+          path: vendor
           key: ${{ runner.os }}-docker-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-docker-
